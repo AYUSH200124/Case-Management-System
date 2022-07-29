@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+{%load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+    <!--Stylesheets-->
+    <style media="screen">
+        *:before,
+        *:after{
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+        .popup{
+            background-color: #eee7da;
+            width: 420px;
+            padding: 30px 40px;
+            position: absolute;
+            transform: translate(-50%,-100%);
+            left: 50%;
+            top: 50%;
+            border-radius: 8px;
+            font-family: "Poppins",sans-serif;
+            display: none;
+            text-align: center;
+        }
+        .popup h2{
+            margin-top: -20px;
+        }
+        .popup p{
+            font-size: 14px;
+            text-align: justify;
+            margin: 20px 0;
+            line-height: 25px;
+        }
+        .popup a{
+            display: block;
+            width: 150px;
+            position: relative;
+            margin: 10px auto;
+            text-align: center;
+            background-color: #f59120;
+            border-radius: 20px;
+            color: #eee7da;
+            text-decoration: none;
+            padding: 8px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="navigation">
+           <ul>
+
+               <li>
+                   <a href="#">
+                       <span class="image-logo"><img src="{%static 'images/strayscue-logo-modified.png' %}" alt="strayscue-img"></span>
+<!--                       <span class="title-brand">Strayscue</span>-->
+                       <span class="image-logo"><img src="{%static 'images/strayscue-title.PNG' %}" alt="strayscue-title"></span>
+                   </a>
+               </li>
+               <li>
+                   <a href="https://www.strayscue.org/">
+                       <span class="icon"><ion-icon name="book-outline"></ion-icon></span>
+                       <span class="title">About us</span>
+                   </a>
+               </li>
+<!--               <li>-->
+<!--                   <a href="#">-->
+<!--                       <span class="icon"><ion-icon name="help-circle-outline"></ion-icon></span>-->
+<!--                       <span class="title">Help!</span>-->
+<!--                   </a>-->
+<!--               </li>-->
+               <li>
+                   <a href="#">
+                       <span class="icon"><ion-icon name="home-outline"></ion-icon></span>
+                       <span class="title">Dashboard</span>
+                   </a>
+               </li>
+               <li>
+                   <a href="javascript: {document.getElementById('logout').submit()}">
+                       <span class="icon"><ion-icon name="key-outline"></ion-icon></span>
+                       <span class="title">Sign-Out</span>
+                   </a>
+                   <form id="logout" method="POST" action="{% url 'logout' %}">
+                       {% csrf_token %}
+                       <input type="hidden" />
+                   </form>
+               </li>
+           </ul>
+        </div>
+
+    <!--main-->
+        <div class="main">
+        <div class="topbar">
+            <div class="toggle">
+                <ion-icon name="menu-outline"></ion-icon>
+            </div>
+            <!--user image-->
+            <div class="user">
+                <img src="{% static 'images/y-o-d-a.png' %}">
+            </div>
+        </div>
+         <!-- cards -->
+            <div class = "cardBox">
+               <div class = "card">
+                  <div>
+                    <div class="numbers">{{total_num_cases}}</div>
+                    <div class="cardName">Total Cases</div>
+                  </div>
+               <div class="iconBx">
+                    <ion-icon name="eye-outline"></ion-icon>
+               </div>
+               </div>
+               <div class = "card">
+                  <div>
+                    <div class="numbers">{{num_reported_cases}}</div>
+                    <div class="cardName">Reported</div>
+                  </div>
+               <div class="iconBx">
+                    <ion-icon name="checkmark-circle-outline"></ion-icon>
+               </div>
+               </div>
+               <div class = "card">
+                  <div>
+                    <div class="numbers">{{num_admitted_cases}}</div>
+                    <div class="cardName">Admitted</div>
+                  </div>
+               <div class="iconBx">
+                    <ion-icon name="medkit-outline"></ion-icon>
+               </div>
+               </div>
+               <div class = "card">
+                  <div>
+                    <div class="numbers">{{num_released_cases}}</div>
+                    <div class="cardName">Released</div>
+                  </div>
+               <div class="iconBx">
+                   <ion-icon name="leaf-outline"></ion-icon>
+               </div>
+               </div>
+
+            </div>
+
+            <div>
+                <form name="search_name" method="GET" action="{% url 'dashboard' %}">
+                    <div style="float:left">
+                        <div class="search">
+                            <label>
+                                {% if error %}
+                                    <input type="text" name="search" placeholder="{{ error }}" />
+                                {% else %}
+                                    <input type="text" name="search" placeholder="Search here" />
+                                {% endif %}
+                            <ion-icon name="search-outline"></ion-icon>
+                            </label>
+                        </div>
+                    </div>
+                    <div style="float:left">
+                        <div class="search">
+                            <select class="select" name="search_by" style="left:200px" color="#f59120">
+                                <option value="" selected disabled hidden>Search By</option>
+                                <option selected> Status </option>
+                                <option> Case ID </option>
+                                <option> Location </option>
+                                <option> Landmark </option>
+                                <option> Pincode </option>
+                                <option> Reporter Name </option>
+                            </select>
+                            &nbsp;
+                            <a href="{% url 'dashboard' %}" class = "btn">Reset Filters</a>
+                        </div>
+
+
+                    </div>
+                </form>
+<!--                <div style="float:left">-->
+<!--                    <div class="search">-->
+<!--                        <a align="center" type="submit" class="btn btn-dark" href="{% url 'add_case_details' %}">Add Case</a>-->
+<!--                    </div>-->
+<!--                </div>-->
+            </div>
+
+            <br/>
+            <br/>
+            <br/>
+
+
+
+
+
+            <!-- detail List -->
+            <!-- class recent orders refers to case details -->
+            <div class="details">
+                <div class="recentOrders">
+                    <div class="cardHeader">
+                        <h2>Case Details</h2>
+                        <a align="right" type="submit" class="btn btn-dark" href="{% url 'add_case_details' %}">Add Case</a>
+                        <a align="right" type="submit" class="btn btn-dark" href="{% url 'analysis_of_cases' %}">Analysis</a>
+                        <a align="right" type="submit" class="btn btn-dark" href="{% url 'cases_csv' %}">Monthly Data</a>
+                        <a align="right" type="submit" class="btn btn-dark" href="{% url 'cases_csv1' %}">Yearly Data</a>
+                        <a align="right" type="submit" class="btn btn-dark" href="{% url 'calendar' %}">Calendar</a>
+
+
+                    </div>
+                    <table>
+                        <thead>
+                        <tr>
+                            <td>Case ID</td>
+                            <td>Location</td>
+                            <td>Landmark</td>
+                            <td>Pincode</td>
+                            <td>Reporter Name</td>
+                            <td>Status</td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            {% for case in c %}
+                            <tr>
+                                <input type="hidden" value="{{case.pk}}" name="case">
+                                <td>{{ case.pk }}</td>
+                                <td>{{ case.location }}</td>
+                                <td>{{ case.landmark }}</td>
+                                <td>{{ case.pincode }}</td>
+                                <td>{{ case.reporter_name }}</td>
+                                <td>{{ case.status }}</td>
+                                <td><a align="center" type="submit" class="btn btn-dark" href="{% url 'case_details' case.pk %}">Edit Case</a></td>
+                               <td><a align="center" type="submit" class="btn btn-dark" href="{% url 'case_delete' case.pk %}">Delete Case</a></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <br/></br/>
+                    {{c}}
+                    <hr><br/><br/>
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination justify-content-center">
+                            {%if c.has_previous %} {# whether the previous page exists #}
+                                <li class="page-item"><a class="page-link" href="?page=1"><button>&laquo First</button></a></li> {# link to the prev page #}
+                                <li class="page-item"><a class="page-link" href="?page={{c.previous_page_number}}"><button>Previous</button></a></li>
+
+                            {% endif %}
+
+
+                            {% if c.has_next %} {# whether the next page exists #}
+                                <li class="page-item"><a class="page-link" href="?page={{ c.next_page_number }}"><button>Next</button></a></li> {# link to the next page #}
+                                <li class="page-item"><a class="page-link" href="?page={{c.paginator.num_pages}}"><button>Last&raquo</button></a></li>
+
+                            {% endif %}
+
+
+                </ul>
+              </nav>
+
+
+
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+    <script>
+        //Menu toggle
+        let toggle = document.querySelector('.toggle');
+        let navigation = document.querySelector('.navigation');
+        let main = document.querySelector('.main');
+
+        toggle.onclick = function() {
+            navigation.classList.toggle('active');
+            main.classList.toggle('active');
+        }
+        //adding hovered class in selected list item
+
+        let list = document.querySelectorAll('.navigation li');
+        function activeLink(){
+            list.forEach((item) =>
+            item.classList.remove('hovered'));
+            this.classList.add('hovered');
+        }
+        list.forEach((item) =>
+        item.addEventListener('mouseover',activeLink));
+
+    </script>
+
+
+
+</body>
+</html>
