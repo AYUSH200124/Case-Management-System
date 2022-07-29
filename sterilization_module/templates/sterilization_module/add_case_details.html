@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+{%load static %}
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Case Details</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/add_case_details.css' %}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.css">
+</head>
+
+<body>
+<!--    <div class="container">-->
+<!--        <div class="navigation">-->
+<!--            <ul>-->
+
+<!--                <li>-->
+<!--                    <a href="#">-->
+<!--                        <span class="image-logo"><img src="images/strayscue-logo-modified.png"-->
+<!--                                alt="strayscue-img"></span>-->
+<!--                        <span class="title-brand">Strayscue</span>-->
+<!--                    </a>-->
+<!--                </li>-->
+<!--                <li>-->
+<!--                    <a href="https://www.strayscue.org/">-->
+<!--                        <span class="icon">-->
+<!--                            <ion-icon name="book-outline"></ion-icon>-->
+<!--                        </span>-->
+<!--                        <span class="title">About us</span>-->
+<!--                    </a>-->
+<!--                </li>-->
+<!--                <li>-->
+<!--                    <a href="#">-->
+<!--                        <span class="icon">-->
+<!--                            <ion-icon name="help-circle-outline"></ion-icon>-->
+<!--                        </span>-->
+<!--                        <span class="title">Help!</span>-->
+<!--                    </a>-->
+<!--                </li>-->
+<!--                <li>-->
+<!--                    <a href="#">-->
+<!--                        <span class="icon">-->
+<!--                            <ion-icon name="home-outline"></ion-icon>-->
+<!--                        </span>-->
+<!--                        <span class="title">Dashboard</span>-->
+<!--                    </a>-->
+<!--                </li>-->
+<!--                <li>-->
+<!--                    <a href="#">-->
+<!--                        <span class="icon">-->
+<!--                            <ion-icon name="key-outline"></ion-icon>-->
+<!--                        </span>-->
+<!--                        <span class="title">Sign-Out</span>-->
+<!--                    </a>-->
+<!--                </li>-->
+<!--            </ul>-->
+<!--        </div>-->
+
+<!--        &lt;!&ndash;main&ndash;&gt;-->
+<!--        <div class="main">-->
+<!--            <div class="topbar">-->
+<!--                <div class="toggle">-->
+<!--                    <ion-icon name="menu-outline"></ion-icon>-->
+<!--                </div>-->
+<!--&lt;!&ndash;                <div class="search">&ndash;&gt;-->
+<!--&lt;!&ndash;                    <label>&ndash;&gt;-->
+<!--&lt;!&ndash;                        <input type="text" placeholder="Search Here">&ndash;&gt;-->
+<!--&lt;!&ndash;                        <ion-icon name="search-outline"></ion-icon>&ndash;&gt;-->
+<!--&lt;!&ndash;                    </label>&ndash;&gt;-->
+<!--&lt;!&ndash;                </div>&ndash;&gt;-->
+<!--                &lt;!&ndash;user image&ndash;&gt;-->
+<!--                <div class="user">-->
+<!--                    <img src="Images/user.jpg"></>-->
+<!--                </div>-->
+<!--            </div>-->
+
+
+            <!-- detail List -->
+
+<div class="details">
+    <div class="recentOrders">
+        {% if error %}
+        {{ error }}
+        {% endif %}
+        <div>
+            <a align="center" type="submit" class="btn btn-dark" href="{% url 'dashboard' %}">Go back to Dashboard</a>
+            <br/>
+            <br/>
+        </div>
+        <form method="POST" action="{% url 'add_case_details' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div>
+                <button align="center" type="submit" class="btn btn-dark"> Save </button>
+                <br/>
+                <br/>
+            </div>
+            <label>Status *</label>
+            <select class="form-control" name="status">
+                <option value="" selected disabled hidden>Choose a status</option>
+                <option> Reported </option>
+                <option> Admitted </option>
+                <option> Blood Test Done </option>
+                <option> Operation Started </option>
+                <option> Post Operation </option>
+                <option> Released </option>
+            </select>
+            <br/>
+            <div class="cardHeader">
+                <h2>Reporter Details:</h2>
+            </div>
+            <div class="grid-container">
+                <div class="grid-item">
+                    <label>Reporter Name *</label>
+                    <input type="text" class="form-control" name="reporter_name" placeholder="" required>
+                </div>
+                <div class="grid-item">
+                    <label>Phone Number *</label>
+                    <input type="text" class="form-control" name="phone_number" placeholder="" required>
+                </div>
+                <div class="grid-item">
+                    <label>Alternate Phone Number</label>
+                    <input type="text" class="form-control" name="alt_phone_number" placeholder="">
+                </div>
+                <div class="grid-item">
+                    <label>Reported Date *</label>
+                    <input type="text" class="form-control" name="reported_date" placeholder="DD-MM-YYYY" required>
+                </div>
+                <div class="grid-item">
+                    <label>Reported Time *</label>
+                    <input type="text" class="form-control" name="reported_time" placeholder="24 Hr HH:MM (eg: 19:11)" required>
+                </div>
+                <div class="grid-item">
+                    <label>Location *</label>
+                    <input type="text" class="form-control" name="location" placeholder="" required>
+                </div>
+                <div class="grid-item">
+                    <label>Landmark *</label>
+                    <input type="text" class="form-control" name="landmark" placeholder="" required>
+                </div>
+                <div class="grid-item">
+                    <label>Pincode *</label>
+                    <input type="text" pattern="[0-9]{6}" class="form-control" name="pincode" placeholder="" required>
+                </div>
+                <div class="grid-item">
+                    <label>Can Drop Animal?</label>
+                    <select id="inputState" class="form-control" name="can_drop_animal">
+                        <option selected=""> Choose an option </option>
+                        <option> Yes </option>
+                        <option> No </option>
+                    </select>
+                </div>
+                <div class="grid-item">
+                    <label>Animal Marking</label>
+                    <input type="text" class="form-control" name="animal_marking" placeholder="">
+                </div>
+                <div class="grid-item">
+                    <label>Animal Colour</label>
+                    <input type="text" class="form-control" name="animal_color" placeholder="">
+                </div>
+                <div class="grid-item">
+                    <label>Animal Type</label>
+                    <select id="inputState" class="form-control" name="animal_type">
+                        <option selected=""> Choose an option </option>
+                        <option> Dog </option>
+                        <option> Cat </option>
+                        <option> Other </option>
+                    </select>
+                </div>
+                <div class="grid-item">
+                   <label>Pickup Date</label>
+                    <input type="text" class="form-control" name="pickup_date" placeholder="DD-MM-YYYY">
+                </div>
+                <div class="grid-item">
+                    <label>Pickup Time</label>
+                    <input type="text" class="form-control" name="pickup_time" placeholder="24 Hr HH:MM (eg: 19:11)">
+                </div>
+            </div>
+            <div class="grid-container">
+                <label>Reporter Photo ID *</label>
+                <input type="file" class="form-control-file" name="reporter_photo_id_1" placeholder="">
+                 <input type="file" class="form-control-file" name="reporter_photo_id_2" placeholder="">
+            </div>
+            <br/>
+            <div class="grid-container">
+                <label>Animal Pictures *</label>
+                <input type="file" multiple class="form-control-file" name="animal_picture_1" placeholder="">
+                <input type="file" multiple class="form-control-file" name="animal_picture_2" placeholder="">
+                <input type="file" multiple class="form-control-file" name="animal_picture_3" placeholder="">
+                <input type="file" multiple class="form-control-file" name="animal_picture_4" placeholder="">
+                <input type="file" multiple class="form-control-file" name="animal_picture_5" placeholder="">
+            </div>
+            <br>
+
+            <div class="grid-container">
+                <label>Consent Form *</label>
+                <input type="file" class="form-control-file" name="consent_form" placeholder="">
+            </div>
+
+            <br/>
+            <br/>
+
+            <div class="cardHeader">
+                <h2>Further Animal Details:</h2>
+            </div>
+            <div class="grid-container">
+                <div class="grid-item">
+                    <label>Animal Age</label>
+                    <select id="inputState" class="form-control" name="age_of_animal">
+                        <option selected=""> Choose an option </option>
+                        <option> 0-1 Yrs </option>
+                        <option> 1-5 Yrs </option>
+                        <option> 5-10 Yrs </option>
+                        <option> 10+ Yrs </option>
+                    </select>
+                </div>
+                <div class="grid-item">
+                    <label>Animal Temperament</label>
+                    <select id="inputState" class="form-control" name="animal_temperament">
+                        <option selected=""> Choose an option </option>
+                        <option> Friendly </option>
+                        <option> Aggressive </option>
+                        <option> Scared </option>
+                        <option> Other </option>
+                    </select>
+                </div>
+                <div class="grid-item">
+                   <label>Animal Gender</label>
+                    <select id="inputState" class="form-control" name="gender">
+                        <option selected=""> Choose an option </option>
+                        <option> Female </option>
+                        <option> Male </option>
+                        <option> Other </option>
+                    </select>
+                </div>
+                <div class="grid-item">
+                   <label>Animal Pregnant</label>
+                    <select id="inputState" class="form-control" name="pregnant">
+                        <option selected=""> Choose an option </option>
+                        <option> Yes </option>
+                        <option> No </option>
+                        <option> Not Sure </option>
+                    </select>
+                </div>
+                <div class="grid-item">
+                   <label>Animal Breed</label>
+                    <select id="inputState" class="form-control" name="breed">
+                        <option selected=""> Choose an option </option>
+                        <option> Indie </option>
+                        <option> Non-Indie </option>
+                    </select>
+                </div>
+                <div class="grid-item">
+                   <label>Animal Catchable</label>
+                    <select id="inputState" class="form-control" name="catchable">
+                        <option selected="" hidden disabled> Choose an option </option>
+                        <option> Yes </option>
+                        <option> No </option>
+                    </select>
+                </div>
+            </div>
+
+            <br/>
+            <br/>
+
+            <div class="cardHeader">
+                <h2>Medical Details:</h2>
+            </div>
+            <div class="grid-container">
+                <div class="grid-item">
+                   <label>Medical History / Other Issues</label>
+                    <input type="text" class="form-control" name="medical_history_other_issues" placeholder="">
+                </div>
+                <div class="grid-item">
+                  <label>Animal Vaccinated</label>
+                   <select id="inputState" class="form-control" name="vaccinated">
+                       <option selected=""> Choose an option </option>
+                       <option> Yes </option>
+                       <option> No </option>
+                       <option> Not Sure </option>
+                   </select>
+                </div>
+                <div class="grid-item">
+                  <label>Animal Dewormed</label>
+                    <select id="inputState" class="form-control" name="dewormed">
+                        <option selected=""> Choose an option </option>
+                        <option> Yes </option>
+                        <option> No </option>
+                        <option> Not Sure </option>
+                    </select>
+                </div>
+                <div class="grid-item">
+                  <label>Animal Fit For Surgery</label>
+                    <select id="inputState" class="form-control" name="fit_for_surgery">
+                        <option selected=""> Choose an option </option>
+                        <option> Yes </option>
+                        <option> No </option>
+                        <option> Not Sure </option>
+                    </select>
+                </div>
+                <div class="grid-item">
+                    <label>Other Details</label>
+                    <input size="30" type="text" class="form-control" name="other_details" placeholder="">
+                </div>
+                <div class="grid-item">
+                    <label>Admission Date</label>
+                    <input type="text" class="form-control" name="admission_date" placeholder="DD-MM-YYYY">
+                </div>
+            </div>
+
+            <div class="grid-container">
+                <label>Blood Report</label>
+                <input type="file" multiple class="form-control-file" name="blood_test_report_1" placeholder="">
+                <input type="file" multiple class="form-control-file" name="blood_test_report_2" placeholder="">
+                <input type="file" multiple class="form-control-file" name="blood_test_report_3" placeholder="">
+                <input type="file" multiple class="form-control-file" name="blood_test_report_4" placeholder="">
+                <input type="file" multiple class="form-control-file" name="blood_test_report_5" placeholder="">
+            </div>
+
+            <br/>
+            <br/>
+
+            <div class="cardHeader">
+                <h2>Operation Details:</h2>
+            </div>
+            <div class="grid-container">
+                <div class="grid-item">
+                    <label>Vet Name</label>
+                    <input type="text" class="form-control" name="vet_assigned" placeholder="">
+                </div>
+                <div class="grid-item">
+                    <label>Operation Date</label>
+                    <input type="text" class="form-control" name="operation_date" placeholder="DD-MM-YYYY">
+                </div>
+                <div class="grid-item">
+                    <label>Operation Cost</label>
+                    <input type="text" class="form-control" name="operation_cost" placeholder="in INR (eg: 2000)">
+                </div>
+                <div class="grid-item">
+                    <label>Operation Start Time</label>
+                    <input type="text" class="form-control" name="operation_start_time" placeholder="24 Hr HH:MM (eg: 19:11)">
+                </div>
+                <div class="grid-item">
+                    <label>Operation End Time</label>
+                    <input type="text" class="form-control" name="operation_end_time" placeholder="24 Hr HH:MM (eg: 19:11)">
+                </div>
+                <div class="grid-item">
+                    <label>Operation Outcome</label>
+                    <select id="inputState" class="form-control" name="operation_outcome">
+                        <option selected=""> Choose an option </option>
+                        <option> Successful </option>
+                        <option> Fatality </option>
+                        <option> Complicated </option>
+                    </select>
+                </div>
+                <div class="grid-item">
+                    <label>Cause of Failure</label>
+                    <input type="text" class="form-control" name="cause_of_failure" placeholder="">
+                </div>
+            </div>
+            <div class="grid-container">
+                <label>Post Operation Picture</label>
+                <input type="file" multiple class="form-control-file" name="after_operation_pic_1" placeholder="">
+                <input type="file" multiple class="form-control-file" name="after_operation_pic_2" placeholder="">
+                <input type="file" multiple class="form-control-file" name="after_operation_pic_3" placeholder="">
+                <input type="file" multiple class="form-control-file" name="after_operation_pic_4" placeholder="">
+                <input type="file" multiple class="form-control-file" name="after_operation_pic_5" placeholder="">
+            </div>
+
+            <br/>
+            <br/>
+
+            <div class="cardHeader">
+                <h2>Post Operation Details:</h2>
+            </div>
+            <div class="grid-container">
+                <div class="grid-item">
+                    <label>Post-Operation Comments</label>
+                    <input type="text" class="form-control" name="post_op_comments" placeholder="">
+                </div>
+                <div class="grid-item">
+                    <label>Cage Number Assigned</label>
+                    <input type="text" class="form-control" name="cage_num" placeholder="">
+                </div>
+                <div class="grid-item">
+                    <label>Post-Operation Start Date</label>
+                    <input type="text" class="form-control" name="post_op_start_date" placeholder="DD-MM-YYYY">
+                </div>
+                <div class="grid-item">
+                    <label>Post-Operation Start Time</label>
+                    <input type="text" class="form-control" name="post_op_start_time" placeholder="24 Hr HH:MM (eg: 19:11)">
+                </div>
+                <div class="grid-item">
+                    <label>Release Date</label>
+                    <input type="text" class="form-control" name="release_date" placeholder="DD-MM-YYYY">
+                </div>
+                <div class="grid-item">
+                    <label>Release Time</label>
+                    <input type="text" class="form-control" name="release_time" placeholder="24 Hr HH:MM (eg: 19:11)">
+                </div>
+                <div class="grid-item">
+                    <label>Other Comments</label>
+                    <input type="text" class="form-control" name="other_comments" placeholder="">
+                </div>
+            </div>
+
+            <div class="grid-container">
+                <label>Medication Prescription Pictures</label>
+                <input type="file" multiple class="form-control-file" name="medicine_photos_1" placeholder="">
+                <input type="file" multiple class="form-control-file" name="medicine_photos_2" placeholder="">
+                <input type="file" multiple class="form-control-file" name="medicine_photos_3" placeholder="">
+                <input type="file" multiple class="form-control-file" name="medicine_photos_4" placeholder="">
+                <input type="file" multiple class="form-control-file" name="medicine_photos_5" placeholder="">
+            </div>
+
+            <br/>
+            <br/>
+
+
+            <div>
+                <button align="center" type="submit" class="btn btn-dark"> Save </button>
+                <br/>
+                <br/>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+
+
+
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+    <script>
+        //Menu toggle
+        let toggle = document.querySelector('.toggle');
+        let navigation = document.querySelector('.navigation');
+        let main = document.querySelector('.main');
+
+        toggle.onclick = function () {
+            navigation.classList.toggle('active');
+            main.classList.toggle('active');
+        }
+        //adding hovered class in selected list item
+
+        let list = document.querySelectorAll('.navigation li');
+
+        function activeLink() {
+            list.forEach((item) =>
+                item.classList.remove('hovered'));
+            this.classList.add('hovered');
+        }
+        list.forEach((item) =>
+            item.addEventListener('mouseover', activeLink));
+    </script>
+</body>
+
+</html>
