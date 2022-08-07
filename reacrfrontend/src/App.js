@@ -18,12 +18,6 @@ import { DarkModeContext } from "./context/darkModeContext";
 
 function App() {
   const { darkMode } = useContext(DarkModeContext);
-
-
-
-
-
-
   return (
     <div className={darkMode ? "app dark" : "app"}>
       <BrowserRouter>
@@ -54,10 +48,7 @@ function App() {
             <Route path="products">
               <Route index element={<List />} />
               <Route path=":productId" element={<Single />} />
-              <Route
-                path="new"
-                element={<New inputs={productInputs} title="Add New Product" />}
-              />
+              <Route path="new" element={<New inputs={productInputs} title="Add New Product" />} />
             </Route>
           </Route>
         </Routes>

@@ -30,16 +30,14 @@ Including another URLconf
 """
 
 from sterilization_module import views
-from django.urls import path
+from django.urls import path, include
+from django.contrib import admin
+from rest_framework import routers
+
+router= routers.DefaultRouter()
+router.register(r'analysis_of_cases', views.CaseAnalysis, 'analysis_of_cases')
+
 urlpatterns = [
-    path('login/', views.login, name='login'),
-    path('logout/', views.logout, name='logout'),
-    path('dashboard/', views.dashboard, name='dashboard'),
-    path('analysis_of_cases/', views.analysis_of_cases, name='analysis_of_cases'),
-    path('case_delete/<int:pk>/', views.case_delete, name='case_delete'),
-    path('add_case_details/', views.add_case_details, name='add_case_details'),
-    path('<str:pk>/', views.case_details, name='case_details'),
-    path('cases_csv', views.cases_csv, name='cases_csv'),
-    path('cases_csv1', views.cases_csv1, name='cases_csv1'),
-    path('calendar', views.Calendarview.as_view(), name='calendar'),
+    path('admin/', admin.site.urls),
+    path('react/', include(router.urls))
 ]
