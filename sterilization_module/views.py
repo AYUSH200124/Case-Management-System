@@ -11,9 +11,11 @@ from django.contrib.auth import login as auth_login
 from django.contrib.auth import authenticate
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
+from rest_framework import viewsets
 import datetime
 from django.shortcuts import render, redirect, get_object_or_404
-
+from rest_framework.response import Response
+from .serializer import CaseDetailSerializer
 
 def index(request):
     return render(request, 'index.html')
@@ -82,7 +84,7 @@ def dashboard(request):
     post_operation = len(CaseDetails.objects.filter(status="Post Operation"))
     pending_cases = len(CaseDetails.objects.all()) - num_released_cases
 
-    return render(request, 'sterilization_module/dashboard.html', {"error": error_message, "all_cases": all_cases, "total_num_cases": len(CaseDetails.objects.all()), "num_reported_cases": num_reported_cases, "num_admitted_cases": num_admitted_cases, "num_reported_cases": num_reported_cases, "num_released_cases": num_released_cases, "c": c})
+    return render(request, 'sterilization_module/dashboard.html', {"error": error_message, "all_cases": all_cases, "total_num_cases": len(CaseDetails.objects.all()), "num_reported_cases": num_reported_cases, "num_admitted_cases": num_admitted_cases, "num_released_cases": num_released_cases, "c": c})
 
 
 def case_delete(request, pk):
@@ -449,6 +451,22 @@ def add_case_details(request):
     else:
         return render(request, 'sterilization_module/add_case_details.html')
 
+class CaseAnalysis(viewsets.ModelViewSet):
+    serializer_class = CaseDetailSerializer
+    def list(self, request):
+        if request.method == "POST":
+            fromdate = request.POST['fromdate']
+            todate = request.POST['todate']
+            date_filter = {"reported_date__gte": fromdate, "reported_date__lte": todate}
+        else:
+            date_filter = {}
+        context = { "total_num_cases": CaseDetails.objects.filter(**date_filter).count() }
+        for status in ["Reported", "Admitted", "Released", "Blood Test Done", "Operation Started", "Post Operation"]:
+            status_key = f'num_{status.lower().replace(" ", "_")}_cases'
+            context[status_key] = CaseDetails.objects.filter(status=status, **date_filter).count()
+        context["pending_cases"] = context["total_num_cases"] - context["num_released_cases"]
+
+        return Response(context)
 
 def analysis_of_cases(request):
     print(request.method)
@@ -457,52 +475,42 @@ def analysis_of_cases(request):
         todate = request.POST['todate']
         print(fromdate)
         print(todate)
-        data = CaseDetails.objects.filter(
-            reported_date__gte=fromdate, reported_date__lte=todate)
-        total_num_cases = len(CaseDetails.objects.filter(
-            reported_date__gte=fromdate, reported_date__lte=todate))
-        num_reported_cases = len(CaseDetails.objects.filter(
-            status="Reported", reported_date__gte=fromdate, reported_date__lte=todate))
-        num_admitted_cases = len(CaseDetails.objects.filter(
-            status="Admitted", reported_date__gte=fromdate, reported_date__lte=todate))
-        num_released_cases = len(CaseDetails.objects.filter(
-            status="Released", reported_date__gte=fromdate, reported_date__lte=todate))
-        blood_test_done_cases = len(CaseDetails.objects.filter(
-            status="Blood Test Done", reported_date__gte=fromdate, reported_date__lte=todate))
-        operation_started_cases = len(CaseDetails.objects.filter(
-            status="Operation Started", reported_date__gte=fromdate, reported_date__lte=todate))
-        post_operation = len(CaseDetails.objects.filter(
-            status="Post Operation", reported_date__gte=fromdate, reported_date__lte=todate))
-        pending_cases = total_num_cases - num_released_cases
+        date_filter = {"reported_date__gte": fromdate, "reported_date__lte": todate}
 
     else:
-        data = CaseDetails.objects.all()
-        total_num_cases = len(CaseDetails.objects.all())
-        num_reported_cases = len(CaseDetails.objects.filter(status="Reported"))
-        num_admitted_cases = len(CaseDetails.objects.filter(status="Admitted"))
-        num_released_cases = len(CaseDetails.objects.filter(status="Released"))
-        blood_test_done_cases = len(CaseDetails.objects.filter(status="Blood Test Done"))
-        operation_started_cases = len(
-            CaseDetails.objects.filter(status="Operation Started"))
-        post_operation = len(CaseDetails.objects.filter(status="Post Operation"))
-        pending_cases = total_num_cases - num_released_cases
+        date_filter = {}
 
-    chartdata = [num_reported_cases, num_admitted_cases, num_reported_cases, num_released_cases,
-                 blood_test_done_cases, operation_started_cases, post_operation, pending_cases]
-    context = {"total_num_cases": total_num_cases,
-               "num_reported_cases": num_reported_cases,
-               "num_admitted_cases": num_admitted_cases,
-               "num_reported_cases": num_reported_cases,
-               "num_released_cases": num_released_cases,
-               "blood_test_done_cases": blood_test_done_cases,
-               "operation_started_cases": operation_started_cases,
-               "post_operation": post_operation,
-               "pending_cases": pending_cases,
-               "data": data,
-               "chartdata": chartdata}
+    total_num_cases = CaseDetails.objects.filter(**date_filter).count()
+    num_reported_cases = CaseDetails.objects.filter(status="Reported", **date_filter).count()
+    num_admitted_cases = CaseDetails.objects.filter(status="Admitted", **date_filter).count()
+    num_released_cases = CaseDetails.objects.filter(status="Released", **date_filter).count()
+    blood_test_done_cases = CaseDetails.objects.filter(status="Blood Test Done", **date_filter).count()
+    operation_started_cases = CaseDetails.objects.filter(status="Operation Started", **date_filter).count()
+    post_operation = CaseDetails.objects.filter(status="Post Operation", **date_filter).count()
+    pending_cases = total_num_cases - num_released_cases
 
-    return render(request, 'sterilization_module/analysis_of_cases.html', context)
+    context = {
+        "total_num_cases": total_num_cases,
+        "num_reported_cases": num_reported_cases,
+        "num_admitted_cases": num_admitted_cases,
+        "num_reported_cases": num_reported_cases,
+        "num_released_cases": num_released_cases,
+        "blood_test_done_cases": blood_test_done_cases,
+        "operation_started_cases": operation_started_cases,
+        "post_operation": post_operation,
+        "pending_cases": pending_cases
+    }
 
+    # return render(request, 'sterilization_module/analysis_of_cases.html', context)
+    return render(request, 'index.html', context)
+    
+    # from django.shortcuts import render
+    # from rest_framework.views import APIView
+    # from rest_framework.response import Response
+    # class ReactView(APIView):
+    #     def get(self, request):
+    #         detail = {"name": detail.name,"detail": detail.detail}
+    #         return Response(detail)
 
 def cases_csv(request):
     response = HttpResponse(content_type='text/csv')
@@ -570,5 +578,5 @@ class Calendarview(generic.ListView):
 def get_date(req_day):
     if req_day:
         year, month = (int(x) for x in req_day.split('-'))
-        return date(year, month, day=1)
+        return datetime.date(year, month, day=1)
     return datetime.date.today()
